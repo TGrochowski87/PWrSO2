@@ -1,24 +1,10 @@
+""" Random """
 import random
 
 
-board = [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
-keys = {
-    'q': (0,0),
-    'w': (0,1),
-    'e': (0,2),
-    'a': (1,0),
-    's': (1,1),
-    'd': (1,2),
-    'z': (2,0),
-    'x': (2,1),
-    'c': (2,2),
-}
-
-player_char = 'X'
-computer_char = 'O'
-
-
 def welcome_info():
+    """ Game info """
+
     print("  WELCOME\n")
     print("Key bindings:")
     print(" Q | W | E")
@@ -27,8 +13,9 @@ def welcome_info():
     print("\n")
 
 
-def print_board():
-    global board
+
+def print_board(board):
+    """ Displaying board """
 
     for i in range(3):
         for j in range(3):
@@ -37,18 +24,21 @@ def print_board():
     print("\n")
 
 
-def is_board_full():
-    global board
+
+def is_board_full(board):
+    """ Checking if board has no available spaces """
 
     for i in range(3):
         for j in range(3):
             if board[i][j] == '_':
                 return False
-    
     return True
 
 
-def check_win_condition(character):
+
+def check_win_condition(board, character):
+    """ Checking if any player won """
+
     for i in range(3):
         if board[i][0] == character and board[i][1] == character and board[i][2] == character:
             return True
@@ -66,10 +56,11 @@ def check_win_condition(character):
     return False
 
 
-def player_turn():
-    global player_char
 
-    if is_board_full():
+def player_turn(board, keys, player_char):
+    """ Functionality for player's turn """
+
+    if is_board_full(board):
         return
 
     while True:
@@ -79,21 +70,20 @@ def player_turn():
             print("Wrong position given!")
             continue
 
-        x, y = keys[place]
+        board_x, board_y = keys[place]
 
-        if board[x][y] != '_':
+        if board[board_x][board_y] != '_':
             print("Position already taken!")
         else:
-            board[x][y] = player_char
+            board[board_x][board_y] = player_char
             break
 
 
-def computer_turn():
-    global board
-    global player_char
-    global computer_char
 
-    if is_board_full():
+def computer_turn(board, computer_char, player_char):
+    """ Functionality for computer's turn """
+
+    if is_board_full(board):
         return
 
     ## WIN CONDITION
@@ -141,7 +131,7 @@ def computer_turn():
         if board[1][1] == '_':
             board[1][1] = computer_char
             return
-    
+
     if board[2][2] == computer_char and board[1][1] == computer_char:
         if board[0][0] == '_':
             board[0][0] = computer_char
@@ -209,7 +199,7 @@ def computer_turn():
         if board[1][1] == '_':
             board[1][1] = computer_char
             return
-    
+
     if board[2][2] == player_char and board[1][1] == player_char:
         if board[0][0] == '_':
             board[0][0] = computer_char
@@ -240,10 +230,10 @@ def computer_turn():
     current_index = rng
 
     while True:
-        x, y = good_options[current_index % 4]
+        board_x, board_y = good_options[current_index % 4]
 
-        if board[x][y] == '_':
-            board[x][y] = computer_char
+        if board[board_x][board_y] == '_':
+            board[board_x][board_y] = computer_char
             return
         else:
             current_index += 1
@@ -259,8 +249,7 @@ def computer_turn():
 
 
 def choose_char():
-    global player_char
-    global computer_char
+    """ Allowing user to choose character """
 
     print("Choose your character: ")
     print("1 - X")
@@ -269,36 +258,51 @@ def choose_char():
     while True:
         choice = input()
         if choice == '1':
-            return
+            return ('X', 'O')
         elif choice == '2':
-            player_char = 'O'
-            computer_char = 'X'
-            return
+            return ('O', 'X')
         else:
             print("Wrong input!")
 
 
+
 def main():
+    """ Main game loop """
+
+    board = [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
+    keys = {
+        'q': (0, 0),
+        'w': (0, 1),
+        'e': (0, 2),
+        'a': (1, 0),
+        's': (1, 1),
+        'd': (1, 2),
+        'z': (2, 0),
+        'x': (2, 1),
+        'c': (2, 2),
+    }
+
+
     welcome_info()
-    choose_char()
-    print_board()
+    player_char, computer_char = choose_char()
+    print_board(board)
 
     while True:
         print("YOUR TURN")
-        player_turn()
-        print_board()
-        if check_win_condition(player_char):
+        player_turn(board, keys, player_char)
+        print_board(board)
+        if check_win_condition(board, player_char):
             print("YOU WON!")
             break
 
         print("COMPUTER'S TURN")
-        computer_turn()
-        print_board()
-        if check_win_condition(computer_char):
+        computer_turn(board, computer_char, player_char)
+        print_board(board)
+        if check_win_condition(board, computer_char):
             print("COMPUTER WON!")
             break
 
-        if is_board_full():
+        if is_board_full(board):
             print("\n IT'S A DRAW!")
             break
 
