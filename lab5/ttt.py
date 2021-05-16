@@ -240,13 +240,14 @@ def computer_turn():
     current_index = rng
 
     while True:
+        print("rng = " + str(rng) + ", index = " + str(current_index))
         x, y = good_options[current_index % 4]
 
         if board[x][y] == '_':
             board[x][y] = computer_char
             return
         else:
-            current_index += current_index
+            current_index += 1
             if current_index % 4 == rng:
                 break
 
