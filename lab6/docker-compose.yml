@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+    app:
+        build: ./frontend1
+        ports:
+        - "5000:5000"
+        volumes:
+        - "./frontend1:/code"
+        depends_on:
+            - database
+    app2:
+        build: ./frontend2
+        ports:
+        - "4999:5000"
+        volumes:
+        - "./frontend2:/code"
+        depends_on:
+            - database
+    database:
+        image: mongo
+        volumes:
+        - "mongo_volume:/data/db"
+
+volumes:
+    mongo_volume:
